@@ -16,8 +16,9 @@ g1 <- round(
     rnorm(7, mean=45),
     rnorm(30, mean=0, sd=0),
     rnorm(56, mean=5)))
+head(g1)
 
-length(g1)
+#length(g1)
 ```
 
 
