@@ -94,7 +94,7 @@ Lets combine the orignal `g1` coverage data and the bin category into a data.fra
 # Data frame containing the coverage and the bin it belongs to
 df_cov <- data.frame(value = g1,
                      bin = bincateg)
-
+head(df_cov)
 ```
 
 
