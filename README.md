@@ -39,15 +39,15 @@ The coverage data has 1000 values, but for plotting puropses we would not draw a
 `g1` has 1000 data points and we now would like to divide the data into 100 bins. So how do we achive a bin something like below? 
 
 
-1. 1-10  
-2. 11-20
-3. 21-30
-4. 31-40
-5. ...
-97. ...
-98. 971-980
-99. 981-990
-100. 991-1000
+bin1. 1-10  
+bin2. 11-20
+bin3. 21-30
+bin4. 31-40
+bin5. ...
+bin97. ...
+bin98. 971-980
+bin99. 981-990
+bin100. 991-1000
 
 
 
@@ -97,7 +97,7 @@ g1[1:10]  # Belongs to bin 1
 ```
 
 ```
-##  [1] 100 101 100 101  99 101 100 101  98 100
+##  [1] 100 100 101  99  99 102 100 100  99  99
 ```
 
 ```r
@@ -105,7 +105,7 @@ g1[11:20] # Belongs to bin 2
 ```
 
 ```
-##  [1]  99 100 102 101  99 100 100  99 101  99
+##  [1]  99 100  99 100 101 100  99  99 101 100
 ```
 
 ```r
@@ -113,7 +113,7 @@ g1[21:30] # Belongs to bin 3
 ```
 
 ```
-##  [1]  99  98 101 100  97 102 101 100  99 100
+##  [1]  99  99 102 101 100  99 100 100 100 101
 ```
 
 ```r
@@ -155,6 +155,26 @@ Lets get the mean coverage for each bin
 ```r
 # Get the mean of each bin
 library(dplyr)
+```
+
+```
+## 
+## Attaching package: 'dplyr'
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+```r
 df_bin <- as.data.frame(group_by(df_cov, bin) %>% 
                           summarise(mean_cov = mean(value)))
 dim(df_bin)
