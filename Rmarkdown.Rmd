@@ -5,26 +5,118 @@ date: "4 April 2016"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+## Drawing a 5' to 3' transcript plot
+
+Often in RNA-seq data we would be interested to examine if there are any bias in the coverage across a transcript. 
+
+![Example of 5' to 3' bias found in RNA-seq](figures/nrg2484-f3.jpg)
+
+This R script shows hows how to draw such a plot and examine if such bias is present in our datasets.
+
+
+```{r}
+# Generate example coverage data for gene1 (g1)
+g1 <- round(
+  c(rnorm(866, mean=100),
+    rnorm(11, mean=70),
+    rnorm(30, mean=10),
+    rnorm(7, mean=45),
+    rnorm(30, mean=0, sd=0),
+    rnorm(56, mean=5)))
+
+length(g1)
 ```
 
-## R Markdown
+The coverage data has `r length(g1)` values, but for plotting puropses we would not draw a plot of all `r length(g1)` base pair. Instead we would like to  *bin* the value into 100 sections. The example below illustrates the point.
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+![Image from RSeQC](figures/geneBody_workflow.png)
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+`g1` has `r length(g1)` data points and we now would like to divide the data into 100 bins. So how do we achive a bin something like below? 
 
-```{r cars}
-summary(cars)
+
+1. 1-10  
+2. 11-20
+3. 21-30
+4. 31-40
+5. ...
+97. ...
+98. 971-980
+99. 981-990
+100. 991-1000
+
+
+```{r}
+# Lets use a script to do the binning process 
+# We use the library binr
+# Bining the coverage into 100 bins
+library(binr)
+binfunc <- bins(1:length(g1), target.bins = 100, max.breaks = 100)
 ```
 
-## Including Plots
+Lets examine the output of binr function, especially from *binct* object
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+binlength <- as.numeric(binfunc$binct) 
+length(binlength) # Generates 100 bins
+head(binfunc$binct) # Each individual bin contains 10 values
+tail(binfunc$binct)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+The *binct* object generates 100 bins as specified by the *target.bins* parameter and for each bin, it contains 10 data points. Now, lets assign the orignal coverage values to thier corresponding bins, for example ;
+
+```{r}
+g1[1:10]  # Belongs to bin 1
+g1[11:20] # Belongs to bin 2
+g1[21:30] # Belongs to bin 3
+# and so forth
+```
+
+Individualy we would do something like this ;
+
+```{r}
+bin1 <- rep("bin1", each=binlength[1])
+bin2 <- rep("bin2", each=binlength[1])
+```
+
+
+```{r}
+# Lets do it in a loop
+# Create a category of the bin
+binlist <- list()
+for (i in seq_along(binlength)){
+  binlist[[i]] <-  rep(i, each=binlength[i])
+}
+bincateg <- unlist(binlist)
+```
+
+Lets combine the orignal `g1` coverage data and the bin category into a data.frame
+```{r}
+# Data frame containing the coverage and the bin it belongs to
+df_cov <- data.frame(value = g1,
+                     bin = bincateg)
+
+```
+
+
+Lets get the mean coverage for each bin
+
+```{r}
+# Get the mean of each bin
+library(dplyr)
+df_bin <- as.data.frame(group_by(df_cov, bin) %>% 
+                          summarise(mean_cov = mean(value)))
+```
+
+
+Finally draw the plot with ggplot2
+
+```{r}
+library(ggplot2)
+ggplot(df_bin, aes(x=bin, y=mean_cov)) +
+  geom_line() + 
+  ylab("Read count") +
+  xlab("5' to 3' coverage")
+```
+
+
+

@@ -1,0 +1,39 @@
+library(dplyr)
+library(binr)
+library(ggplot2)
+
+# --------------------------------------------# 
+# Example data on how to calculate mean coverage
+# --------------------------------------------# 
+# Vector of coverage
+ss <- round(
+  c(rnorm(500, mean=100),
+    rnorm(21, mean=70),
+    rnorm(30, mean=10),
+    rnorm(7, mean=45),
+    rnorm(30, mean=0, sd=0),
+    rnorm(56, mean=5)))
+
+length(ss)
+
+# Eg - want to bin the data into 100 bins
+binfunc <- bins(1:length(ss), target.bins = 100, max.breaks = 100)
+# Extract result from binfunction
+binlength <- as.numeric(binfunc$binct) 
+# Create a category of the bin
+binlist <- list()
+for (i in seq_along(binlength)){
+  binlist[[i]] <-  rep(i, each=binlength[i])
+}
+bincateg <- unlist(binlist)
+# Data frame containing the coverage and the bin it belongs to
+df_cov <- data.frame(value = ss,
+                     bin = bincateg)
+
+# Get the mean of each bin
+df_bin <- as.data.frame(group_by(df_cov, bin) %>% 
+                          summarise(mean_cov = mean(value)))
+
+
+ggplot(df_bin, aes(x=bin, y=mean_cov)) +
+  geom_line() 
