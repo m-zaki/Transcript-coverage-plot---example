@@ -35,14 +35,14 @@ The coverage data has `r length(g1)` values, but for plotting puropses we would 
 
 
 bin1. 1-10  
-bin2. 11-20
-bin3. 21-30
-bin4. 31-40
-bin5. ...
-bin97. ...
-bin98. 971-980
-bin99. 981-990
-bin100. 991-1000
+bin2. 11-20  
+bin3. 21-30  
+bin4. 31-40  
+bin5. ...  
+bin97. ...  
+bin98. 971-980  
+bin99. 981-990  
+bin100. 991-1000  
 
 
 ```{r}
