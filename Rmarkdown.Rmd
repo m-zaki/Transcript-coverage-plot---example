@@ -105,7 +105,7 @@ Lets get the mean coverage for each bin
 library(dplyr)
 df_bin <- as.data.frame(group_by(df_cov, bin) %>% 
                           summarise(mean_cov = mean(value)))
-dim(df_bin)
+dim(df_bin) 
 ```
 
 

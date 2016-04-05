@@ -97,7 +97,7 @@ g1[1:10]  # Belongs to bin 1
 ```
 
 ```
-##  [1] 101 101 100 101 100  98  99 100 102  99
+##  [1] 102 100  99 100 100 101 100  99 101 100
 ```
 
 ```r
@@ -105,7 +105,7 @@ g1[11:20] # Belongs to bin 2
 ```
 
 ```
-##  [1]  99  99 100 101 100  99 101 101  99 100
+##  [1] 101 100  99 101 103 101  99  99 100  98
 ```
 
 ```r
@@ -113,7 +113,7 @@ g1[21:30] # Belongs to bin 3
 ```
 
 ```
-##  [1]  99 101 100 101 100  99 101  98 100 102
+##  [1] 101 101  98 100 100  98 100  98  98 100
 ```
 
 ```r
@@ -146,6 +146,17 @@ Lets combine the orignal `g1` coverage data and the bin category into a data.fra
 # Data frame containing the coverage and the bin it belongs to
 df_cov <- data.frame(value = g1,
                      bin = bincateg)
+head(df_cov)
+```
+
+```
+##   value bin
+## 1   102   1
+## 2   100   1
+## 3    99   1
+## 4   100   1
+## 5   100   1
+## 6   101   1
 ```
 
 
@@ -157,7 +168,7 @@ Lets get the mean coverage for each bin
 library(dplyr)
 df_bin <- as.data.frame(group_by(df_cov, bin) %>% 
                           summarise(mean_cov = mean(value)))
-dim(df_bin)
+dim(df_bin) 
 ```
 
 ```
